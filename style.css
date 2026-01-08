@@ -32,9 +32,15 @@ body {
   display: grid;
   grid-template-columns: minmax(220px, 280px) 1fr;
   gap: 28px;
+  width: min(100%, calc(var(--max) + 220px));
   max-width: calc(var(--max) + 220px);
   margin: 0 auto;
   align-items: start;
+}
+
+.brand,
+.main {
+  min-width: 0;
 }
 
 .brand {
@@ -166,6 +172,7 @@ nav {
 .content {
   font-size: 17px;
   line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
 .content h1,
@@ -213,6 +220,7 @@ nav {
   border-radius: 16px;
   overflow-x: auto;
   margin: 0 0 18px;
+  max-width: 100%;
 }
 
 .content pre code {
@@ -247,6 +255,15 @@ footer {
   margin-top: 30px;
   font-size: 13px;
   color: var(--muted);
+}
+
+img,
+video,
+svg,
+canvas,
+iframe {
+  max-width: 100%;
+  height: auto;
 }
 
 .loading {
