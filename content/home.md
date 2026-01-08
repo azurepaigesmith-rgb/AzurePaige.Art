@@ -1,6 +1,6 @@
 # Neo CMS
 
-Welcome to your tiny flat-file CMS. This is one `index.html` that reads markdown from `/content`.
+Welcome to [Neo CMS](https://github.com/CrowderSoup/Neo-CMS) your tiny flat-file CMS. This is one `index.html` that reads markdown from `/content`.
 
 - Drop a new `.md` file inside `/content`.
 - Add it to `content/index.json`.
