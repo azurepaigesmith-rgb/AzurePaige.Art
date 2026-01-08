@@ -10,5 +10,5 @@
 
 - Add your own sections
 - Customize the CSS variables
-- IndieAuth rel=me identity links
+- IndieAuth `rel="me"` identity links
 - Webmention.io integration for inbound mentions

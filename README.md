@@ -1,6 +1,6 @@
 # neo-cms
 
-Neo CMS is a lightweight, static content site starter built with NeoCities.org in mind. It ships as a single-page site with a tiny JS layer and a simple `content/` folder you can edit without build tools.
+Neo CMS is a lightweight, static content site starter built with NeoCities in mind. It ships as a single-page site with a tiny JS layer and a simple `content/` folder you can edit without build tools.
 
 ![Neo CMS screenshot](screenshot.png)
 
@@ -14,7 +14,7 @@ Neo CMS is a lightweight, static content site starter built with NeoCities.org i
 
 1. Create a NeoCities site if you do not have one yet.
 2. Open `index.html` in a browser to preview locally.
-3. Edit markdown or HTML files in `content/` to update pages.
+3. Edit markdown files in `content/` to update pages.
 4. Customize behavior and data loading in `neo-cms.js`.
 5. Tweak styles in `style.css`.
 6. Upload the updated files to your NeoCities site.
@@ -39,7 +39,7 @@ Neo CMS ships with basic IndieWeb features using hosted services:
 ### IndieAuth identity
 
 IndieAuth relies on `rel="me"` links in your HTML so other sites can verify your
-identity. Add your profile links directly in `index.html` under the Rel=me
+identity. Add your profile links directly in `index.html` under the `rel="me"`
 section. Neo CMS does not include a local login UI.
 
 ### Setup steps
