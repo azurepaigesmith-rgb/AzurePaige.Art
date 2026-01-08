@@ -30,12 +30,7 @@ jobs:
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments \
             -d "{\"ref\":\"${GITHUB_SHA}\",\"environment\":\"neocities\",\"auto_merge\":false,\"required_contexts\":[],\"description\":\"Deploy to Neocities\",\"environment_url\":\"${NEOCITIES_URL}\"}")
-          deployment_id=$(printf '%s' "$response" | python3 - <<'PY'
-import json, os, sys
-data = json.load(sys.stdin)
-print(data["id"])
-PY
-)
+          deployment_id=$(printf '%s' "$response" | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
           echo "DEPLOYMENT_ID=${deployment_id}" >> "${GITHUB_ENV}"
 
       - name: Package site
