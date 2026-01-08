@@ -35,11 +35,14 @@ jobs:
           PY
 
       - name: Deploy to Neocities
-        if: ${{ secrets.NEOCITIES_API_KEY != '' }}
         env:
           NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY }}
         run: |
           set -euo pipefail
+          if [ -z "${NEOCITIES_API_KEY:-}" ]; then
+            echo "NEOCITIES_API_KEY is not set; skipping deploy."
+            exit 0
+          fi
           api_url="https://neocities.org/api/upload"
 
           git ls-files -co --exclude-standard -z | while IFS= read -r -d '' file; do
