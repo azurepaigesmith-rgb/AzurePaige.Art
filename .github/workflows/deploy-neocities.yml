@@ -5,14 +5,38 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  deployments: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
       NEOCITIES_API_KEY: ${{ secrets.NEOCITIES_API_KEY }}
+      NEOCITIES_URL: https://crowdersoup.neocities.org
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Create deployment
+        if: ${{ env.NEOCITIES_API_KEY != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          response=$(curl -fS \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments \
+            -d "{\"ref\":\"${GITHUB_SHA}\",\"environment\":\"neocities\",\"auto_merge\":false,\"required_contexts\":[],\"description\":\"Deploy to Neocities\",\"environment_url\":\"${NEOCITIES_URL}\"}")
+          deployment_id=$(printf '%s' "$response" | python3 - <<'PY'
+import json, os, sys
+data = json.load(sys.stdin)
+print(data["id"])
+PY
+)
+          echo "DEPLOYMENT_ID=${deployment_id}" >> "${GITHUB_ENV}"
 
       - name: Package site
         if: ${{ env.NEOCITIES_API_KEY != '' }}
@@ -32,3 +56,15 @@ jobs:
             -H "Authorization: Bearer ${NEOCITIES_API_KEY}" \
             -F "file=@site.zip" \
             https://neocities.org/api/upload
+
+      - name: Mark deployment successful
+        if: ${{ env.NEOCITIES_API_KEY != '' && env.DEPLOYMENT_ID != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          curl -fS \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments/${DEPLOYMENT_ID}/statuses \
+            -d "{\"state\":\"success\",\"environment_url\":\"${NEOCITIES_URL}\",\"description\":\"Deployed to Neocities\"}"
