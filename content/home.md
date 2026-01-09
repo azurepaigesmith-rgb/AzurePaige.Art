@@ -1,7 +1,7 @@
 ---
-title: Neo-CMS
+title: Azure Paige Artist
 slug: home
-description: A tiny flat-file CMS for Neocities.
+description: Bio
 menu: Start
 ---
 
