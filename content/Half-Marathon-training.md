@@ -1,6 +1,6 @@
 ---
 title: Half Marathon training
-slug: Half-marathon training
+slug: Half-marathon-training
 description: What better way to see nature than to trail run through it.
 menu: Start
 ---
