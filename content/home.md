@@ -1,41 +1,14 @@
 ---
-title: Azure Paige Artist
+title: Azure Paige's Creator Space
 slug: home
-description: Bio
+description: A place to house all my silly little creations.
 menu: Start
 ---
 
-Welcome to [Neo-CMS](https://github.com/CrowderSoup/Neo-CMS), a tiny flat-file CMS made for Neocities. It is a single `index.html` file that reads markdown from `/content` and renders it as static HTML in the browser.
+Welcome to Azure Paige's portfolio of creations and tinkers. I am happy to stopped by to puruse. My interests are varied and far flung, this page will be too. Enjoy!
 
-- Drop a new `.md` file inside `/content`.
-- Add it to `content/index.json`.
-- Add front matter (title, slug, description, menu). Done.
+But first! A bit about me!
 
----
+Southern Utah native that has lived all over the western US. I grew up creation and tinkering, thinking back to the retro days of OG MySpace writing up silly profiles with whatever wild code we could slap together (before AI and great documenation might I add). 
 
-## What you get
-
-- Markdown rendering for headings, lists, links, and code.
-- Hash-based routing so every page has a shareable URL.
-- No build step, no dependencies, no database.
-- Minimal IndieWeb affordances like `rel="me"` links.
-- Webmentions via `webmention.io`.
-
-> This stays intentionally small. Tweak the HTML, adjust the CSS, and make it your own.
-
-## What this is not
-
-- Not a full-featured CMS.
-- Not WordPress, Ghost, or a site builder.
-- Not meant for plugins or multi-user workflows.
-
-## Example code
-
-```
-const words = ["plain", "fast", "cute"];
-console.log(words.join(" / "));
-```
-
-## Links
-
-Check out [Neocities](https://neocities.org) or add your own links here.
+These days I am interested in spending time in nature whether on trails or water, creating art, hanging out with my family, and toying around with a new fitness adventure.
