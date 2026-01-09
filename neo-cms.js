@@ -13,6 +13,8 @@ let manifest = null;
 let pages = [];
 const pageCache = new Map();
 const pageByRoute = new Map();
+const routeConflicts = new Set();
+const cacheNamespace = "neo-cms-cache:v1:";
 
 const indieweb = {
   siteUrl: "",
@@ -56,6 +58,83 @@ const parseSimpleYaml = (lines) => {
   return data;
 };
 
+const toBoolean = (value) => {
+  if (typeof value === "boolean") return value;
+  if (value == null) return false;
+  return ["true", "yes", "1", "on"].includes(String(value).toLowerCase());
+};
+
+const toNumber = (value, fallback = 0) => {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) ? parsed : fallback;
+};
+
+const readCache = (key) => {
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!data || typeof data.body !== "string") return null;
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+
+const writeCache = (key, value) => {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    // Ignore storage failures (private mode, quota, etc.).
+  }
+};
+
+const fetchTextWithCache = async (url) => {
+  const cacheKey = `${cacheNamespace}${url}`;
+  const cached = readCache(cacheKey);
+  const headers = {};
+
+  if (cached?.etag) headers["If-None-Match"] = cached.etag;
+  if (cached?.lastModified) {
+    headers["If-Modified-Since"] = cached.lastModified;
+  }
+
+  let response;
+  try {
+    response = await fetch(url, { cache: "no-store", headers });
+  } catch (error) {
+    if (cached) return cached.body;
+    throw error;
+  }
+
+  if (response.status === 304 && cached) return cached.body;
+
+  if (!response.ok) {
+    if (cached) return cached.body;
+    throw new Error("Missing file");
+  }
+
+  const body = await response.text();
+  const etag = response.headers.get("ETag") || "";
+  const lastModified = response.headers.get("Last-Modified") || "";
+
+  if (etag || lastModified) {
+    writeCache(cacheKey, {
+      body,
+      etag,
+      lastModified,
+      cachedAt: Date.now(),
+    });
+  }
+
+  return body;
+};
+
+const getNotFoundRoute = () => {
+  const fallback = manifest?.site?.notFound || "not-found";
+  return String(fallback || "").trim();
+};
+
 const parseFrontMatter = (raw) => {
   const normalized = raw.replace(/\r\n/g, "\n");
   const lines = normalized.split("\n");
@@ -83,7 +162,8 @@ const parseFrontMatter = (raw) => {
   };
 };
 
-const parseMarkdown = (raw) => {
+const parseMarkdown = (raw, options = {}) => {
+  const allowHtml = Boolean(options.allowHtml);
   const lines = raw.replace(/\r\n/g, "\n").split("\n");
   const blocks = [];
   let buffer = [];
@@ -99,7 +179,12 @@ const parseMarkdown = (raw) => {
   };
 
   const inlineMarkdown = (text) => {
-    let html = escapeHtml(text);
+    let html = allowHtml ? text : escapeHtml(text);
+    html = html.replace(
+      /!\[([^\]]*)\]\(([^)]+)\)/g,
+      (match, alt, url) =>
+        `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" />`,
+    );
     html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
     html = html.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
     html = html.replace(/\*([^*]+)\*/g, "<em>$1</em>");
@@ -118,7 +203,6 @@ const parseMarkdown = (raw) => {
         blocks.push(`<pre><code>${escapeHtml(buffer.join("\n"))}</code></pre>`);
         buffer = [];
         inCode = false;
-        codeLang = "";
       } else {
         flushParagraph();
         inCode = true;
@@ -218,9 +302,7 @@ const buildRoute = (file, slug) => {
 
 const loadPageSource = async (file) => {
   if (pageCache.has(file)) return pageCache.get(file);
-  const response = await fetch(`content/${file}`, { cache: "no-store" });
-  if (!response.ok) throw new Error("Missing file");
-  const raw = await response.text();
+  const raw = await fetchTextWithCache(`content/${file}`);
   const { meta, body } = parseFrontMatter(raw);
   const headingMatch = body.match(/^#\s+(.+)$/m);
   const title =
@@ -234,7 +316,10 @@ const loadPageSource = async (file) => {
     description: meta.description || "",
     menu: meta.menu || "",
     slug: meta.slug || "",
+    weight: toNumber(meta.weight, 0),
     url: meta.url || "",
+    draft: toBoolean(meta.draft),
+    allowHtml: toBoolean(meta.allowHtml),
   };
   pageCache.set(file, page);
   return page;
@@ -398,6 +483,7 @@ const renderNav = () => {
   const order = [];
 
   pages.forEach((page) => {
+    if (page.draft || page.routeConflict) return;
     const menu = page.menu || "Pages";
     if (!sections.has(menu)) {
       sections.set(menu, []);
@@ -414,7 +500,13 @@ const renderNav = () => {
     const links = document.createElement("div");
     links.className = "nav-links";
 
-    sections.get(menu).forEach((page) => {
+    const sorted = sections.get(menu).slice().sort((a, b) => {
+      if (a.weight !== b.weight) return a.weight - b.weight;
+      if (a.order !== b.order) return a.order - b.order;
+      return (a.title || a.route).localeCompare(b.title || b.route);
+    });
+
+    sorted.forEach((page) => {
       const link = document.createElement("a");
       link.href = `#${page.route}`;
       link.textContent = page.title || page.route;
@@ -455,16 +547,29 @@ const loadPage = async () => {
     return;
   }
   const slug = location.hash.replace("#", "") || pages[0].route;
-  const page = findPage(slug);
-  markActiveLink(slug);
+  let page = findPage(slug);
+  const notFoundRoute = getNotFoundRoute();
+  const fallbackPage = notFoundRoute ? findPage(notFoundRoute) : null;
+
+  if (!page && fallbackPage && slug !== notFoundRoute) {
+    location.hash = `#${notFoundRoute}`;
+    return;
+  }
+
+  markActiveLink(page ? page.route : slug);
 
   if (!page) {
     pageTitle.textContent = "Missing page";
     pageSubtitle.textContent =
       "The link you followed does not exist in content/index.json.";
     setStatus("Not found");
+    const notFoundLink = fallbackPage
+      ? ` or view <a href="#${escapeHtml(
+          notFoundRoute,
+        )}">the 404 page</a>`
+      : "";
     renderEmpty(
-      "Add the page back into <code>content/index.json</code> or pick another link.",
+      `Add the page back into <code>content/index.json</code> or pick another link${notFoundLink}.`,
     );
     if (webmentions) {
       webmentions.innerHTML = "";
@@ -479,7 +584,7 @@ const loadPage = async () => {
 
   try {
     const source = await loadPageSource(page.file);
-    const html = parseMarkdown(source.body);
+    const html = parseMarkdown(source.body, { allowHtml: source.allowHtml });
     content.innerHTML = html || "<p>Empty page.</p>";
     pageTitle.textContent = source.title || pageTitle.textContent;
     setStatus("Loaded");
@@ -500,15 +605,39 @@ const loadPage = async () => {
 const loadPages = async () => {
   pageByRoute.clear();
   pages = [];
+  routeConflicts.clear();
 
   const files = Array.isArray(manifest.files) ? manifest.files : [];
-  for (const file of files) {
+  for (let index = 0; index < files.length; index += 1) {
+    const file = files[index];
     try {
       const source = await loadPageSource(file);
       const route = buildRoute(file, source.slug);
-      const page = { ...source, route };
+      if (source.slug) {
+        const normalizedSlug = slugify(source.slug);
+        if (normalizedSlug !== source.slug) {
+          console.warn(
+            `Slug "${source.slug}" in ${file} normalizes to "${normalizedSlug}".`,
+          );
+        }
+        if (source.slug.includes("/")) {
+          console.warn(`Slug "${source.slug}" in ${file} contains a "/".`);
+        }
+      }
+      if (pageByRoute.has(route)) {
+        routeConflicts.add(route);
+        console.warn(
+          `Duplicate route "${route}" detected. Only the first instance will appear in navigation.`,
+        );
+      }
+      const page = { ...source, route, order: index };
+      if (routeConflicts.has(route)) {
+        page.routeConflict = true;
+      }
       pages.push(page);
-      pageByRoute.set(route, page);
+      if (!pageByRoute.has(route)) {
+        pageByRoute.set(route, page);
+      }
     } catch (error) {
       const route = buildRoute(file, "");
       const fallback = {
@@ -520,9 +649,15 @@ const loadPages = async () => {
         url: "",
         route,
         error: true,
+        weight: 0,
+        draft: false,
+        allowHtml: false,
+        order: index,
       };
       pages.push(fallback);
-      pageByRoute.set(route, fallback);
+      if (!pageByRoute.has(route)) {
+        pageByRoute.set(route, fallback);
+      }
     }
   }
 
@@ -532,9 +667,8 @@ const loadPages = async () => {
 
 const loadManifest = async () => {
   try {
-    const response = await fetch(manifestPath, { cache: "no-store" });
-    if (!response.ok) throw new Error("Missing manifest");
-    manifest = await response.json();
+    const raw = await fetchTextWithCache(manifestPath);
+    manifest = JSON.parse(raw);
 
     siteTitle.textContent = manifest.site?.title || "Neo-CMS";
     siteTagline.textContent = manifest.site?.tagline || siteTagline.textContent;

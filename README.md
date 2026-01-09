@@ -19,6 +19,24 @@ Neo-CMS exists to make a simple, learnable workflow for hobbyists and tinkerers 
 
 The menu is generated from each file's front matter, while `content/index.json` lists the files to load.
 
+## Front matter fields
+
+Each markdown file can include YAML front matter:
+
+- `title`: Overrides the visible page title.
+- `description`: Short subtitle shown under the title.
+- `menu`: Section label in the navigation.
+- `slug`: Route used in the hash URL (e.g. `#about`).
+- `weight`: Sort order inside a menu (lower comes first).
+- `draft`: Set to `true` to hide from the nav but keep the page accessible by hash.
+- `allowHtml`: Set to `true` to allow inline HTML in markdown.
+
+## Optional site config
+
+In `content/index.json` you can add:
+
+- `site.notFound`: Slug to use as the 404 page (defaults to `not-found`).
+
 ## What it is not
 
 - Not a full-featured CMS
