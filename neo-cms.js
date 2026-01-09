@@ -10,6 +10,9 @@ const siteFooter = document.getElementById("site-footer");
 const webmentions = document.getElementById("webmentions");
 
 let manifest = null;
+let pages = [];
+const pageCache = new Map();
+const pageByRoute = new Map();
 
 const indieweb = {
   siteUrl: "",
@@ -33,6 +36,52 @@ const slugify = (text) =>
     .replace(/[^a-z0-9\s-]/g, "")
     .trim()
     .replace(/\s+/g, "-");
+
+const parseSimpleYaml = (lines) => {
+  const data = {};
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) return;
+    const match = trimmed.match(/^([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+    if (!match) return;
+    let value = match[2].trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    data[match[1]] = value;
+  });
+  return data;
+};
+
+const parseFrontMatter = (raw) => {
+  const normalized = raw.replace(/\r\n/g, "\n");
+  const lines = normalized.split("\n");
+  if (lines[0]?.trim() !== "---") {
+    return { meta: {}, body: normalized };
+  }
+
+  const yamlLines = [];
+  let endIndex = -1;
+  for (let i = 1; i < lines.length; i += 1) {
+    if (lines[i].trim() === "---") {
+      endIndex = i;
+      break;
+    }
+    yamlLines.push(lines[i]);
+  }
+
+  if (endIndex === -1) {
+    return { meta: {}, body: normalized };
+  }
+
+  return {
+    meta: parseSimpleYaml(yamlLines),
+    body: lines.slice(endIndex + 1).join("\n"),
+  };
+};
 
 const parseMarkdown = (raw) => {
   const lines = raw.replace(/\r\n/g, "\n").split("\n");
@@ -154,6 +203,41 @@ const parseMarkdown = (raw) => {
   }
 
   return blocks.join("");
+};
+
+const buildRoute = (file, slug) => {
+  const stem = file.replace(/\.md$/i, "");
+  const parts = stem.split("/");
+  const base = slug || parts[parts.length - 1] || "page";
+  if (parts.length > 1) {
+    parts[parts.length - 1] = base;
+    return parts.join("/");
+  }
+  return base;
+};
+
+const loadPageSource = async (file) => {
+  if (pageCache.has(file)) return pageCache.get(file);
+  const response = await fetch(`content/${file}`, { cache: "no-store" });
+  if (!response.ok) throw new Error("Missing file");
+  const raw = await response.text();
+  const { meta, body } = parseFrontMatter(raw);
+  const headingMatch = body.match(/^#\s+(.+)$/m);
+  const title =
+    meta.title || (headingMatch ? headingMatch[1].trim() : "Untitled");
+  const page = {
+    file,
+    raw,
+    body,
+    meta,
+    title,
+    description: meta.description || "",
+    menu: meta.menu || "",
+    slug: meta.slug || "",
+    url: meta.url || "",
+  };
+  pageCache.set(file, page);
+  return page;
 };
 
 const setStatus = (text) => {
@@ -310,21 +394,31 @@ const loadWebmentions = async (page, slug) => {
 
 const renderNav = () => {
   nav.innerHTML = "";
-  manifest.sections.forEach((section) => {
+  const sections = new Map();
+  const order = [];
+
+  pages.forEach((page) => {
+    const menu = page.menu || "Pages";
+    if (!sections.has(menu)) {
+      sections.set(menu, []);
+      order.push(menu);
+    }
+    sections.get(menu).push(page);
+  });
+
+  order.forEach((menu) => {
     const sectionEl = document.createElement("div");
     sectionEl.className = "nav-section";
-    sectionEl.innerHTML = `<h3>${section.title}</h3>`;
+    sectionEl.innerHTML = `<h3>${menu}</h3>`;
 
     const links = document.createElement("div");
     links.className = "nav-links";
 
-    section.items.forEach((item) => {
-      const slug = item.slug || slugify(item.title || item.file);
-      item.slug = slug;
+    sections.get(menu).forEach((page) => {
       const link = document.createElement("a");
-      link.href = `#${slug}`;
-      link.textContent = item.title || slug;
-      link.dataset.slug = slug;
+      link.href = `#${page.route}`;
+      link.textContent = page.title || page.route;
+      link.dataset.slug = page.route;
       links.appendChild(link);
     });
 
@@ -340,12 +434,7 @@ const markActiveLink = (slug) => {
 };
 
 const findPage = (slug) => {
-  for (const section of manifest.sections) {
-    for (const item of section.items) {
-      if (item.slug === slug) return item;
-    }
-  }
-  return null;
+  return pageByRoute.get(slug) || null;
 };
 
 const renderEmpty = (message) => {
@@ -354,8 +443,18 @@ const renderEmpty = (message) => {
 
 const loadPage = async () => {
   if (!manifest) return;
-  const slug =
-    location.hash.replace("#", "") || manifest.sections[0].items[0].slug;
+  if (!pages.length) {
+    pageTitle.textContent = "No pages";
+    pageSubtitle.textContent =
+      "Add markdown files to content/ and list them in content/index.json.";
+    setStatus("Setup");
+    renderEmpty("Add markdown files and refresh to see them here.");
+    if (webmentions) {
+      webmentions.innerHTML = "";
+    }
+    return;
+  }
+  const slug = location.hash.replace("#", "") || pages[0].route;
   const page = findPage(slug);
   markActiveLink(slug);
 
@@ -379,19 +478,10 @@ const loadPage = async () => {
   setStatus("Loading");
 
   try {
-    const response = await fetch(`content/${page.file}`, {
-      cache: "no-store",
-    });
-    if (!response.ok) {
-      throw new Error("Missing file");
-    }
-    const raw = await response.text();
-    const html = parseMarkdown(raw);
+    const source = await loadPageSource(page.file);
+    const html = parseMarkdown(source.body);
     content.innerHTML = html || "<p>Empty page.</p>";
-    const headingMatch = raw.match(/^#\s+(.+)$/m);
-    if (!page.title && headingMatch) {
-      pageTitle.textContent = headingMatch[1].trim();
-    }
+    pageTitle.textContent = source.title || pageTitle.textContent;
     setStatus("Loaded");
     loadWebmentions(page, slug);
   } catch (error) {
@@ -405,6 +495,39 @@ const loadPage = async () => {
       webmentions.innerHTML = "";
     }
   }
+};
+
+const loadPages = async () => {
+  pageByRoute.clear();
+  pages = [];
+
+  const files = Array.isArray(manifest.files) ? manifest.files : [];
+  for (const file of files) {
+    try {
+      const source = await loadPageSource(file);
+      const route = buildRoute(file, source.slug);
+      const page = { ...source, route };
+      pages.push(page);
+      pageByRoute.set(route, page);
+    } catch (error) {
+      const route = buildRoute(file, "");
+      const fallback = {
+        file,
+        title: route,
+        description: "",
+        menu: "",
+        slug: "",
+        url: "",
+        route,
+        error: true,
+      };
+      pages.push(fallback);
+      pageByRoute.set(route, fallback);
+    }
+  }
+
+  renderNav();
+  await loadPage();
 };
 
 const loadManifest = async () => {
@@ -423,8 +546,7 @@ const loadManifest = async () => {
     indieweb.siteUrl = siteConfig.url || indieweb.siteUrl;
     indieweb.webmentionEndpoint =
       indiewebConfig.webmentionEndpoint || indieweb.webmentionEndpoint;
-    renderNav();
-    await loadPage();
+    await loadPages();
   } catch (error) {
     pageTitle.textContent = "Manifest missing";
     pageSubtitle.textContent =

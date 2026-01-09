@@ -1,10 +1,15 @@
-# Neo-CMS
+---
+title: Neo-CMS
+slug: home
+description: A tiny flat-file CMS for Neocities.
+menu: Start
+---
 
 Welcome to [Neo-CMS](https://github.com/CrowderSoup/Neo-CMS), a tiny flat-file CMS made for Neocities. It is a single `index.html` file that reads markdown from `/content` and renders it as static HTML in the browser.
 
 - Drop a new `.md` file inside `/content`.
 - Add it to `content/index.json`.
-- Link it from the menu. Done.
+- Add front matter (title, slug, description, menu). Done.
 
 ---
 

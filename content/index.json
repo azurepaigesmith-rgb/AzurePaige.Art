@@ -2,46 +2,11 @@
   "site": {
     "title": "Neo-CMS",
     "tagline": "A tiny flat-file CMS for Neocities. Drop files in /content and list them here.",
-    "footer": "Built for Neocities. Edit content/index.json to change the menu.",
+    "footer": "Built for Neocities. Edit content/index.json and front matter to change the menu.",
     "url": "https://neo-cms.neocities.org/",
     "indieweb": {
       "webmentionEndpoint": "https://webmention.io/neo-cms.neocities.org/webmention"
     }
   },
-  "sections": [
-    {
-      "title": "Start",
-      "items": [
-        {
-          "title": "Home",
-          "file": "home.md",
-          "slug": "home",
-          "description": "A tiny flat-file CMS for Neocities."
-        },
-        {
-          "title": "How It Works",
-          "file": "how-it-works.md",
-          "slug": "how-it-works",
-          "description": "Put files in /content. Add them here. Done."
-        }
-      ]
-    },
-    {
-      "title": "Collection",
-      "items": [
-        {
-          "title": "Notes",
-          "file": "notes.md",
-          "slug": "notes",
-          "description": "Loose thoughts, quick updates, and drafts."
-        },
-        {
-          "title": "Changelog",
-          "file": "changelog.md",
-          "slug": "changelog",
-          "description": "Tiny release log."
-        }
-      ]
-    }
-  ]
+  "files": ["home.md", "how-it-works.md", "notes.md", "changelog.md"]
 }

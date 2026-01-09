@@ -1,4 +1,9 @@
-# Changelog
+---
+title: Changelog
+slug: changelog
+description: Tiny release log.
+menu: Collection
+---
 
 ## 0.1
 

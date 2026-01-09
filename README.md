@@ -12,9 +12,12 @@ Neo-CMS exists to make a simple, learnable workflow for hobbyists and tinkerers 
 
 - A super simple CMS for Neocities
 - Flat files in `content/` as the source of truth for pages
+- Page metadata in YAML front matter
 - Static HTML rendered from that content (no build step)
 - Minimal IndieWeb support (microformats + basic semantics)
 - Friendly for learners, hobbyists, and small personal sites
+
+The menu is generated from each file's front matter, while `content/index.json` lists the files to load.
 
 ## What it is not
 
