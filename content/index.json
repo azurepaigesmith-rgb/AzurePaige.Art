@@ -8,5 +8,5 @@
       "webmentionEndpoint": "https://webmention.io/neo-cms.neocities.org/webmention"
     }
   },
-  "files": ["home.md", "how-it-works.md", "notes.md", "changelog.md", "art-portfolio.md", "Half-marathon-training.md"]
+  "files": ["home.md", "art-portfolio.md", "Half-marathon-training.md"]
 }
