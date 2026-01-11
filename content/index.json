@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "Neo-CMS",
-    "tagline": "A tiny flat-file CMS for Neocities. Drop files in /content and list them here.",
-    "footer": "Built for Neocities. Edit content/index.json and front matter to change the menu.",
+    "title": "Azure Paige's Creator Space",
+    "tagline": "A place to house all my silly little creations",
+    "footer": "Built for Neocities. ",
     "url": "https://neo-cms.neocities.org/",  
     "indieweb": {
       "webmentionEndpoint": "https://webmention.io/neo-cms.neocities.org/webmention"
