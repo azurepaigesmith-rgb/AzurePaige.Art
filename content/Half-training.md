@@ -3,7 +3,6 @@ title: Half training
 slug: Half-training
 description: What better way to see nature than to trail run through it.
 menu: Tech Tinkers
-allowHtml: true
 ---
 
 
