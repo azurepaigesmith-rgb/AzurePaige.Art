@@ -2,7 +2,7 @@
 title: Half Marathon training
 slug: Half-marathon-training
 description: What better way to see nature than to trail run through it.
-menu: Start
+menu: Tech Tinkers
 ---
 
 My SIL invited me to run a half marthon with her. I had 20 weeks to do it, as someone of decent physical fitness and in the midst of fun-employment I figured why not! I paircoded a training plan and away I went. This is the result of the paircoding and me doing my best to stick to the plan.

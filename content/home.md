@@ -1,5 +1,5 @@
 ---
-title: Azure Paige's Creator Space
+title: Home
 slug: home
 description: A place to house all my silly little creations.
 menu: Start
