@@ -8,7 +8,6 @@ allowHtml: true
 
 My SIL invited me to run a half marthon with her. I had 20 weeks to do it, as someone of decent physical fitness and in the midst of fun-employment I figured why not! I paircoded a training plan and away I went. This is the result of the paircoding and me doing my best to stick to the plan.
 
-<allowHtml>=true
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,7 +26,7 @@ My SIL invited me to run a half marthon with her. I had 20 weeks to do it, as so
         - Report Info: Long run mileage progression -> Goal: Visualize the increase in endurance over time -> Viz/Presentation: Line chart showing mileage per week -> Interaction: Hover tooltips display exact mileage for each week. -> Justification: A line chart clearly and immediately communicates the training load, including build-up, peak, and taper phases. -> Library/Method: Chart.js (Canvas).
         - Report Info: Sections on Strength, Technique, Gear, Nutrition -> Goal: Organize supplementary content without cluttering the main view -> Viz/Presentation: Accordion component -> Interaction: User clicks a topic header to expand and read the details. -> Justification: An accordion is a space-efficient way to present detailed text, allowing users to explore tips as needed. -> Library/Method: Vanilla JS toggle classes.
     -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
     <style>
         body {
             font-family: 'Inter', sans-serif;

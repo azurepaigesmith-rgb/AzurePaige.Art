@@ -3,4 +3,357 @@ title: Banded Exercise Cross Train
 slug: Banded-Exercise-Cross-Train
 description: Cross training for running and climbing using body weight and tension bands.
 menu: Tech Tinkers
+allowHtml: true
 ---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Bodyweight Guide</title>
+    <!-- Use Inter font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .exercise-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .exercise-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .carousel {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            overflow-x: hidden;
+        }
+        .carousel-item {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8">
+
+    <div id="main-content" class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden p-6 sm:p-10">
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">Interactive Workout Guide</h1>
+            <p class="text-gray-500 text-base sm:text-lg">Select a day below to start your guided workout!</p>
+        </header>
+
+        <section class="mb-10 text-center">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-indigo-600 mb-6">Day 1: Leg & Core Foundation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-50 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Workout Plan</h3>
+                    <ul class="list-disc list-inside text-left text-gray-600 space-y-1">
+                        <li>Bodyweight Squats (12-15 reps)</li>
+                        <li>Banded Glute Bridges (15-20 reps)</li>
+                        <li>Alternating Lunges (10-12 reps per leg)</li>
+                        <li>Plank (30-60 sec hold)</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Instructions</h3>
+                    <p class="text-gray-600 text-sm text-left">
+                       Perform <strong>3-4 sets</strong>. Rest for <strong>30-60 seconds</strong> between exercises and <strong>1-2 minutes</strong> between each set.
+                    </p>
+                </div>
+            </div>
+            <button onclick="startWorkout('day1')" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300">Start Day 1 Workout ✨</button>
+        </section>
+        
+        <hr class="my-8 border-t-2 border-gray-200">
+
+        <section class="mb-10 text-center">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-indigo-600 mb-6">Day 2: Stability & Balance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                 <div class="bg-gray-50 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Workout Plan</h3>
+                    <ul class="list-disc list-inside text-left text-gray-600 space-y-1">
+                        <li>Single-Leg Squats (8-10 reps per leg)</li>
+                        <li>Bird-Dog (12-15 reps per side)</li>
+                        <li>Banded Lateral Walks (10-15 steps per direction)</li>
+                        <li>Side Plank (30-60 sec hold)</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Instructions</h3>
+                    <p class="text-gray-600 text-sm text-left">
+                       Perform <strong>3-4 sets</strong>. Rest for <strong>30-60 seconds</strong> between exercises and <strong>1-2 minutes</strong> between each set.
+                    </p>
+                </div>
+            </div>
+            <button onclick="startWorkout('day2')" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300">Start Day 2 Workout ✨</button>
+        </section>
+
+        <hr class="my-8 border-t-2 border-gray-200">
+
+        <section class="mb-10 text-center">
+            <h2 class="text-2xl sm:text-3xl font-semibold text-indigo-600 mb-6">Day 3: Full-Body Endurance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-gray-50 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Workout Plan</h3>
+                    <ul class="list-disc list-inside text-left text-gray-600 space-y-1">
+                        <li>Squat Jumps (10-12 reps)</li>
+                        <li>Push-Ups (8-12 reps)</li>
+                        <li>Banded Pull-Aparts (15-20 reps)</li>
+                        <li>Bicycle Crunches (15-20 reps per side)</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-5 shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Instructions</h3>
+                    <p class="text-gray-600 text-sm text-left">
+                        Perform <strong>3-4 sets</strong>. Rest for <strong>30-60 seconds</strong> between exercises and <strong>1-2 minutes</strong> between each set.
+                    </p>
+                </div>
+            </div>
+            <button onclick="startWorkout('day3')" class="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:bg-indigo-700 transition duration-300">Start Day 3 Workout ✨</button>
+        </section>
+    </div>
+
+    <!-- Workout Carousel View (Initially Hidden) -->
+    <div id="workout-view" class="hidden fixed inset-0 bg-gray-900 bg-opacity-90 flex flex-col justify-center items-center p-4 z-50">
+        <div id="exercise-carousel" class="w-full max-w-2xl bg-white rounded-2xl p-8 shadow-2xl text-center relative">
+            <div id="current-exercise">
+                <!-- Exercise content will be dynamically loaded here -->
+            </div>
+            <div class="flex justify-between mt-8">
+                <button id="prev-btn" class="bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-400 transition" disabled>Previous</button>
+                <span id="set-counter" class="text-lg font-semibold text-gray-700">Set 1 of 3</span>
+                <button id="next-btn" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg hover:bg-indigo-700 transition">Next</button>
+            </div>
+            <div class="flex justify-center space-x-4 mt-6">
+                <button id="pause-btn" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:bg-yellow-600 transition duration-300">Pause</button>
+                <button id="end-workout-btn" class="bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg hover:bg-red-700 transition duration-300">End Workout</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const exerciseData = {
+            'day1': [
+                { name: 'Bodyweight Squats', 
+                    description: 'Stand with feet shoulder-width apart. Lower your hips as if sitting in a chair, keeping your chest up and back straight.', 
+                    reps: '12-15 reps', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1594381711717-b769f36f860c?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Banded Glute Bridges', 
+                    description: 'Place a resistance band just above your knees. Lie on your back with knees bent and feet flat. Lift your hips, pushing your knees outwards against the band. Squeeze your glutes at the top.', 
+                    reps: '15-20 reps', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1628163539268-968e82a392b4?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Alternating Lunges', 
+                    description: 'Step forward with one foot and lower your hips until both knees are bent at a 90-degree angle. Push off with your front foot to return to the starting position.', 
+                    reps: '10-12 per leg', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1543781320-302a249c12b8?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Plank', 
+                    description: 'Place your forearms on the ground, shoulder-width apart. Keep your body in a straight line from head to heels, engaging your core and glutes. Avoid sagging hips.', 
+                    reps: '30-60 sec hold', timer: 45, 
+                    imageUrl: 'https://images.unsplash.com/photo-1614925769719-7561845c43d2?q=80&w=1740&auto=format&fit=crop' }
+            ],
+            'day2': [
+                { name: 'Single-Leg Squats', 
+                    description: 'Balance on one leg and slowly lower your hips as if sitting down. Keep your standing knee stable. Use a wall for support if needed.', 
+                    reps: '8-10 per leg', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1582260656111-e633d7b32231?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Bird-Dog', 
+                    description: 'Start on all fours. Extend your right arm and left leg simultaneously, keeping your back flat. Return to start and switch sides.', 
+                    reps: '12-15 per side', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1618146757041-5942461937f2?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Banded Lateral Walks', 
+                    description: 'Place a band above your knees. Get into a quarter-squat position. Step sideways, maintaining tension on the band. Take 5-10 steps in one direction, then reverse.', 
+                    reps: '10-15 steps per direction', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1632766327092-23c34d35133d?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Side Plank', 
+                    description: 'Lie on your side, with one forearm on the floor and feet stacked. Lift your hips until your body forms a straight line. Hold, then switch sides.', 
+                    reps: '30-60 sec hold', timer: 45, 
+                    imageUrl: 'https://images.unsplash.com/photo-1610488667554-46808848d8ce?q=80&w=1740&auto=format&fit=crop' }
+            ],
+            'day3': [
+                { name: 'Squat Jumps', 
+                    description: 'From a squat position, explosively jump up, then land softly back into a squat. This is a high-intensity movement.', 
+                    reps: '10-12 reps', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1623354388383-a9d012435f3d?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Push-Ups', 
+                    description: 'Start in a plank position. Lower your chest toward the floor, then push back up. You can perform these on your knees to make them easier.', 
+                    reps: '8-12 reps', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1621538466635-42287f34c568?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Banded Pull-Aparts', 
+                    description: 'Hold a resistance band with both hands in front of you, with arms straight. Pull your hands apart, stretching the band until your shoulder blades pinch together. Slowly release.', 
+                    reps: '15-20 reps', timer: 0, 
+                    imageUrl: 'https://images.unsplash.com/photo-1632770851860-24458f312c9c?q=80&w=1740&auto=format&fit=crop' },
+                { name: 'Bicycle Crunches', 
+                    description: 'Lie on your back with your hands behind your head. Bring your right elbow to your left knee, then switch, twisting your core with each rep.', 
+                    reps: '15-20 per side', timer: 0, imageUrl: 'https://images.unsplash.com/photo-1594381711717-b769f36f860c?q=80&w=1740&auto=format&fit=crop' }
+            ]
+        };
+
+        const mainContent = document.getElementById('main-content');
+        const workoutView = document.getElementById('workout-view');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const endWorkoutBtn = document.getElementById('end-workout-btn');
+        const currentExerciseEl = document.getElementById('current-exercise');
+        const setCounter = document.getElementById('set-counter');
+
+        let currentDay;
+        let exercises;
+        let exerciseIndex = 0;
+        let setIndex = 1;
+        let timer = null;
+        let countdown = 0;
+        let isResting = false;
+        let isPaused = false;
+
+        function startWorkout(day) {
+            currentDay = day;
+            exercises = exerciseData[day];
+            exerciseIndex = 0;
+            setIndex = 1;
+            isPaused = false;
+            pauseBtn.textContent = 'Pause';
+            mainContent.classList.add('hidden');
+            workoutView.classList.remove('hidden');
+            renderExercise();
+        }
+
+        function renderExercise() {
+            clearInterval(timer);
+            const isLastSet = setIndex > 3;
+            const isLastExercise = exerciseIndex >= exercises.length;
+
+            if (isLastExercise && isLastSet && !isResting) {
+                endWorkout();
+                return;
+            }
+            
+            if (isResting) {
+                // Render a rest screen
+                const restTime = 30; // 30-60 seconds rest between sets
+                countdown = restTime;
+                currentExerciseEl.innerHTML = `
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Rest Time</h2>
+                    <p class="text-gray-600 text-lg mb-4">Get ready for the next exercise!</p>
+                    <div class="text-6xl font-extrabold text-indigo-600 mt-8 mb-4">
+                        <span id="countdown-timer">${countdown}</span>s
+                    </div>
+                `;
+                setCounter.textContent = `Set ${setIndex} of 3`;
+                startCountdown(true);
+            } else {
+                // Render an exercise screen
+                const exercise = exercises[exerciseIndex];
+                currentExerciseEl.innerHTML = `
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">${exercise.name}</h2>
+                    <p class="text-gray-600 mb-6">${exercise.description}</p>
+                    <div class="relative w-full h-64 bg-gray-200 rounded-lg overflow-hidden mb-6 flex items-center justify-center">
+                        ${exercise.imageUrl ? `<img src="${exercise.imageUrl}" alt="${exercise.name} image" class="object-cover w-full h-full">` : `<p class="text-gray-500">Image/GIF placeholder</p>`}
+                    </div>
+                    <p class="text-2xl font-semibold text-gray-700 mb-4">${exercise.reps}</p>
+                    <div id="countdown-container" class="${exercise.timer > 0 ? '' : 'hidden'}">
+                        <p class="text-gray-600 text-lg mb-2">Time remaining:</p>
+                        <div class="text-6xl font-extrabold text-indigo-600">
+                            <span id="countdown-timer">${exercise.timer}</span>s
+                        </div>
+                    </div>
+                `;
+                setCounter.textContent = `Set ${setIndex} of 3`;
+                if (exercise.timer > 0) {
+                    countdown = exercise.timer;
+                    startCountdown();
+                } else {
+                    nextBtn.classList.remove('hidden');
+                }
+            }
+            
+            updateNavigationButtons();
+        }
+
+        function startCountdown(isRest = false) {
+            nextBtn.classList.add('hidden');
+            timer = setInterval(() => {
+                if (isPaused) {
+                    return;
+                }
+                countdown--;
+                document.getElementById('countdown-timer').textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    if (isRest) {
+                        isResting = false;
+                        exerciseIndex++;
+                        if (exerciseIndex >= exercises.length) {
+                             exerciseIndex = 0;
+                             setIndex++;
+                        }
+                        renderExercise();
+                    } else {
+                        nextBtn.classList.remove('hidden');
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateNavigationButtons() {
+            prevBtn.disabled = exerciseIndex === 0 && setIndex === 1;
+        }
+
+        function endWorkout() {
+            clearInterval(timer);
+            workoutView.classList.add('hidden');
+            mainContent.classList.remove('hidden');
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (isPaused) return;
+            if (exerciseIndex > 0) {
+                exerciseIndex--;
+                renderExercise();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (isPaused) return;
+            clearInterval(timer);
+            exerciseIndex++;
+            if (exerciseIndex >= exercises.length) {
+                exerciseIndex = 0;
+                setIndex++;
+                if (setIndex <= 3) {
+                    isResting = true;
+                }
+            }
+            renderExercise();
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            if (isPaused) {
+                clearInterval(timer);
+                pauseBtn.textContent = 'Resume';
+            } else {
+                pauseBtn.textContent = 'Pause';
+                if (countdown > 0) {
+                    startCountdown(isResting);
+                } else {
+                    renderExercise();
+                }
+            }
+        });
+        
+        endWorkoutBtn.addEventListener('click', () => {
+            endWorkout();
+        });
+    </script>
+
+</body>
+</html>
