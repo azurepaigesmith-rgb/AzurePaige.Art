@@ -36,23 +36,33 @@ h1 {
     color: #666666;
 }
 
-/* Navigation */
-nav {
-    margin-bottom: 3rem;
+
+/* Navigation Container */
+nav ul {
+    list-style-type: none; /* Removes bullet points */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Aligns items horizontally */
+    flex-wrap: wrap; /* Allows items to wrap on small screens */
+    gap: 24px; /* Space between the links */
+}
+
+nav li {
+    display: block;
 }
 
 nav a {
     text-decoration: none;
     color: #333333;
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: color 0.3s ease;
 }
 
 nav a:hover {
-    color: #a5a58d;
+    color: #6b705c;
 }
 
 /* Content Sections */
@@ -81,4 +91,8 @@ footer {
     text-align: center;
     border-top: 1px solid #e0e0e0;
     padding-top: 2rem;
+    
+    
+
+
 }
