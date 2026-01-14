@@ -1,0 +1,84 @@
+/* Variables for easy theme management */
+:root {
+    --bg-color: #fafafa;
+    --text-color: #333333;
+    --accent-color: #6b705c; /* Muted Sage Green */
+    --secondary-text: #666666;
+    --border-color: #e0e0e0;
+    --nav-hover: #a5a58d;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header and Title Section */
+header {
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+}
+
+h1 {
+    font-weight: 300;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+}
+
+.description {
+    font-style: italic;
+    color: var(--secondary-text);
+}
+
+/* Navigation */
+nav {
+    margin-bottom: 3rem;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--nav-hover);
+}
+
+/* Content Sections */
+section {
+    margin-bottom: 3rem;
+}
+
+h2 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-left: 3px solid var(--accent-color);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+p {
+    margin-bottom: 1.2rem;
+}
+
+/* Footer */
+footer {
+    margin-top: 5rem;
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 2rem;
+}
