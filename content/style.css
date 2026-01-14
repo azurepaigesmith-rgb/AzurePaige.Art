@@ -11,8 +11,8 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--bg-color);
+    color: #333333;
+    background-color: #fafafa;
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
@@ -20,20 +20,20 @@ body {
 
 /* Header and Title Section */
 header {
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #e0e0e0;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
 }
 
 h1 {
     font-weight: 300;
-    color: var(--accent-color);
+    color: #6b705c;;
     margin-bottom: 0.5rem;
 }
 
 .description {
     font-style: italic;
-    color: var(--secondary-text);
+    color: #666666;
 }
 
 /* Navigation */
@@ -43,7 +43,7 @@ nav {
 
 nav a {
     text-decoration: none;
-    color: var(--text-color);
+    color: #333333;
     font-weight: bold;
     font-size: 0.9rem;
     text-transform: uppercase;
@@ -52,7 +52,7 @@ nav a {
 }
 
 nav a:hover {
-    color: var(--nav-hover);
+    color: #a5a58d;
 }
 
 /* Content Sections */
@@ -64,7 +64,7 @@ h2 {
     font-size: 1.2rem;
     text-transform: uppercase;
     letter-spacing: 1px;
-    border-left: 3px solid var(--accent-color);
+    border-left: 3px solid #6b705c;
     padding-left: 1rem;
     margin-bottom: 1.5rem;
 }
@@ -77,8 +77,8 @@ p {
 footer {
     margin-top: 5rem;
     font-size: 0.8rem;
-    color: var(--secondary-text);
+    color: #666666;
     text-align: center;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid #e0e0e0;
     padding-top: 2rem;
 }
